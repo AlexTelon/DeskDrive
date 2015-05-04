@@ -2,10 +2,12 @@ from flask import Flask, render_template
 from flask.ext.restless import APIManager
 from flask.ext.sqlalchemy import SQLAlchemy
 from sqlalchemy import Text, Column, Integer
+from flask.ext.triangle import Triangle
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///pin.db'
 db = SQLAlchemy(app)
+Triangle(app)
 
 
 class Pin(db.Model):
@@ -27,8 +29,15 @@ api_manager.create_api(Pin, methods=['GEt', 'POST', 'DELETE', 'PUT'])
 
 @app.route('/')
 def index():
-    return render_template("index.html")
+    return render_template("main.html")
 
+@app.route('/codeschool')
+def codeschool():
+    return render_template("codeschool.html")
+
+@app.route('/drive')
+def drive():
+    return render_template("drive.html")
 
 app.debug = True
 if __name__ == '__main__':

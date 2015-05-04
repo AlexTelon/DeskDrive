@@ -8,15 +8,17 @@
         /**
          * Called when the client library is loaded to start the auth flow.
          */
-        function handleClientLoad() {
-            window.setTimeout(checkAuth, 1);
-            gapi.load('picker')
+        function onApiLoad() {
+            window.setTimeout(gapi.load('auth', {'callback': checkAuth}));
+            //window.setTimeout(checkAuth, 1);
+            window.setTimeout(gapi.load('picker'))
         }
 
         /**
          * Check if the current user has authorized the application.
          */
         function checkAuth() {
+
             gapi.auth.authorize(
                     {'client_id': CLIENT_ID, 'scope': SCOPES, 'immediate': true},
                     handleAuthResult);
@@ -52,7 +54,7 @@
         function createPicker() {
             var picker = new google.picker.PickerBuilder()
                     .setOautToken(oauthToken)
-                    .setDevloperKey(CLIENT_ID)
+                    .setDevloperKey('AIzaSyC0-BTWOAlPK9qjb_iu9BZ77BgUsIF8mrY')
                     .build();
             picker.setVisible(true);
         }
@@ -120,7 +122,7 @@
             }
         }
     </script>
-    <script type="text/javascript" src="https://apis.google.com/js/client.js?onload=handleClientLoad"></script>
+    <script type="text/javascript" src="https://apis.google.com/js/client.js?onload=onApiLoad"></script>
 </head>
 <body>
 <!--Add a file picker for the user to start the upload process -->
