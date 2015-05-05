@@ -1,25 +1,18 @@
 var rSlider, gSlider, bSlider;
 var drawActive = false;
 var brushR = 30;
+var r,g,b;
+var bgColor = "rgb(255,204,100)";
+var cv;
 
 function setup() {
     var w = window.innerWidth;
     var h = window.innerHeight;
-    createCanvas(w, h);
+    cv = createCanvas(w, h);
+    console.log(cv)
+    background(bgColor);
 
-    noStroke();
-    input = createInput();
-    input.position(w / 3 + 20, 65);
-
-    button = createButton('submit');
-    button.position(w / 3 + 150, 65);
-    button.mousePressed(test);
-
-    label = createElement('h1', 'go to/create project');
-    label.position(w / 3 + 20, 5);
-
-    textAlign(CENTER);
-    textSize(50);
+    stroke();
 
     // create sliders
     rSlider = createSlider(0, 255, 100);
@@ -28,15 +21,29 @@ function setup() {
     gSlider.position(20, 50);
     bSlider = createSlider(0, 255, 255);
     bSlider.position(20, 80);
+
     // create button to draw
     button = createButton('drawActive');
-    button.position(30, 100);
+    button.position(30, 120);
     button.mouseClicked(function() {
         if (drawActive)
             drawActive = false;
         else
             drawActive = true;
     });
+
+    // create button to draw
+    button = createButton('Clear');
+    button.position(140, 120);
+    button.mouseClicked(function() {
+        clearBg();
+    });
+}
+
+// clear all
+function clearBg() {
+    console.log("before clear: ", cv);
+    background(bgColor);
 }
 
 function test() {
@@ -46,20 +53,28 @@ function test() {
 }
 
 function draw() {
+    r = rSlider.value();
+    g = gSlider.value();
+    b = bSlider.value();
     if (mouseIsPressed && drawActive) {
-        console.log("derp");
-        fill(255, 0, 0);
+        fill(r, g, b);
         ellipse(mouseX, mouseY, brushR, brushR);
     } else {
 
     }
 
-    var r = rSlider.value();
-    var g = gSlider.value();
-    var b = bSlider.value();
+
     //fill(r,g,b)
     fill(r, g, b);
     text("red", 165, 35);
     text("green", 165, 65);
     text("blue", 165, 95);
+}
+
+/**
+ * Returns the whole canvas so it can be saved and reused later
+ * @returns {*}
+ */
+function getCanvas() {
+    return cv;
 }

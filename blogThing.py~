@@ -51,11 +51,6 @@ def codeschool():
 def drive():
     return render_template("drive.html")
 
-@app.route('/buttontest')
-def buttontest():
-    return render_template("buttonTest.html")
-
-
 
 @app.route('/getUserName')
 def getUserName():
@@ -93,9 +88,11 @@ def createStorageFor(owner, deskname):
     # Create/overwrite file
     try:
         #pass
-        print("before open to: ", os.path.join(path, fileName))
+        print("before open")
         f = open(os.path.join(path, fileName), 'w')
+        print("before write")
         f.write("Testing")
+        print("before close")
         f.close()
         print("file has been closed")
     except Exception as e:
