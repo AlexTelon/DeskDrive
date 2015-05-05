@@ -6,16 +6,15 @@ app.controller("AppCtrl", function ($http, $scope) {
     app.message = "Am I working?";
     $http.get("/api/desk").success(function (data) {
         app.desks = data.objects;
-        console.log("/api/desk - app.desks: ", app.desks);
     })
 
     app.addDesk = function (deskName) {
-        console.log("adding new desk: ", deskName);
         if (deskName == null)
         deskName = "new";
+        console.log("adding new desk: ", deskName);
         var owner = app.getUserName();
-        var storage = app.createStorageFor(owner, deskName);
         console.log("owner: ", owner);
+        var storage = app.createStorageFor(owner, deskName);
         $http.post("/api/desk", {"owner": owner, "name": deskName, "storage": storage})
             .success(function (data) {
                 console.log("successful push");
@@ -44,12 +43,20 @@ app.controller("AppCtrl", function ($http, $scope) {
 
     app.submit = function(text) {
         console.log("here we are with text: ", text);
-        console.log("oldval: ", $scope.text )
+        console.log("oldval: ", $scope.text );
         $scope.text = text;
     }
 
     app.createStorageFor = function(owner, deskName) {
-         return $http.get("/createStorageFor/" + owner, + "/" + deskName);
+        url = "/createStorageFor/" + owner + "/" + deskName;
+        ret = null;
+        $.get(url, function ( data ) {
+            ret = data;
+            I need to write this outside the scope and im too tired to remember tha nice syntax for that
+            console.log("derpa:", data);
+        });
+        console.log("ret is: ", ret);
+        return ret
     }
 
 

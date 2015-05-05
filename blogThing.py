@@ -1,8 +1,10 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, session
 from flask.ext.restless import APIManager
 from flask.ext.sqlalchemy import SQLAlchemy
 from sqlalchemy import Text, Column, Integer
 from flask.ext.triangle import Triangle
+import requests
+
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///pin.db'
@@ -10,26 +12,30 @@ db = SQLAlchemy(app)
 Triangle(app)
 
 
-class Pin(db.Model):
+class Desk(db.Model):
     id = Column(Integer, primary_key=True)
-    title = Column(Text, unique=False)
-    image = Column(Text, unique=False)
+    owner = Column(Text, unique=False)
+    #Right now only suport for 1 name, several would be fun later on
+    name = Column(Text, unique=False)
+    #We store all desks on the server with an unique url so they can be shared through email and such
+    storage = Column(Text, unique=False)
 
-    def __init__(self, title, image):
-        self.title = title
-        self.image = image
+    def __init__(self, owner, name, storage):
+        self.owner = owner
+        self.name = name
+        self.storage = storage
 
     def __repr__(self):
-        return '<Title %r>' % self.title
+        return '<Owner, %r, Name %r, Storage %r>' % (self.owner,  self.name, self.storage)
 
 db.create_all()
 
 api_manager = APIManager(app, flask_sqlalchemy_db=db)
-api_manager.create_api(Pin, methods=['GEt', 'POST', 'DELETE', 'PUT'])
+api_manager.create_api(Desk, methods=['GET', 'POST', 'DELETE', 'PUT'])
 
 @app.route('/')
 def index():
-    return render_template("main.html")
+    return render_template("main.html", desk="", storage="")
 
 @app.route('/codeschool')
 def codeschool():
@@ -38,6 +44,43 @@ def codeschool():
 @app.route('/drive')
 def drive():
     return render_template("drive.html")
+
+@app.route('/getUserName')
+def getUserName():
+    print("getUserName")
+    # mock solution so far. Replace with a google response for the real drive user.
+    return "AlexTelon"
+
+
+@app.route('/storage/<owner>/<deskname>')
+def storage(owner, deskname):
+    ret = Desk.query.filter_by(owner=owner, name=deskname).first()
+    if not ret == None:
+        #ret = db.session.query(); # owner=owner, name=deskname)
+        #TODO handle when query does not find anything
+        print("storage returns: ", ret)
+        print("owner: ", ret.owner)
+        print("name: ", ret.name)
+        print("storage: ", ret.storage)
+        return render_template("main.html", desk=ret.name, storage=ret.storage)
+    return render_template("main.html", desk="Desk not found", storage="File is not stored on system")
+
+
+@app.route('/createStorageFor/<owner>/<deskname>')
+def createStorageFor(owner, deskname):
+    return "derpaherpa"
+    #print("derpa")
+    #name = "desks/" + owner + "/" + deskname
+    #print("creating a new file")
+    #try:
+        #pass
+        #file = open(name, 'w')
+        #file.write("Testing")
+        #file.close()
+    #except:
+        #print("file creation failed")
+
+    #return name
 
 app.debug = True
 if __name__ == '__main__':
