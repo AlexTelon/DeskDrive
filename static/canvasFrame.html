@@ -65,7 +65,7 @@
             // First close the prev obj
             json += "]},\n";
             // Then begin the next
-            json += "{ \"color\":[" + getColorJson(r, b, g);
+            json += "{ \"color\":[" + getColorJson(r, g, b);
         }
     }
     /**
@@ -102,7 +102,7 @@
                 for (var key in objOfElements) {
                     //console.log("element in third level ", objOfElements[key]);
                     var functionCallObj = objOfElements[key];
-                    console.log("functionCallObj:", functionCallObj);
+                    //console.log("functionCallObj:", functionCallObj);
                     // we want too loop through all elements in each color obj backwards
                     // to get correct overlap between objects
                     keys.push(functionCallObj);
@@ -114,7 +114,7 @@
                 //for (var c = keys.length, i = 0; c >= i; c--) {
                     var element = objOfElements[i];
 
-                    console.log("element new ", element , "i:", i);
+                    //console.log("element new ", element , "i:", i);
 
                     //  console.log("second level: ", key);
                     //element = obj[key];
@@ -128,7 +128,7 @@
                         fill(element['r'], element['g'], element['b']);
                     }
                     else if (len == 2) {
-                        console.log("ellipse(" + element['x'] + ", " +  element['y'] + ", " +  brushR + ", " +  brushR + ");");
+                        //console.log("ellipse(" + element['x'] + ", " +  element['y'] + ", " +  brushR + ", " +  brushR + ");");
                         ellipse(element['x'], element['y'], brushR, brushR);
                     }
                     else {
@@ -207,6 +207,12 @@
         if (drawActive) {
             saveData(mouseX, mouseY);
         }
+    }
+
+    // to draw a more smooth version once we release the mouse
+    function mouseReleased() {
+        console.log("mouseReleased");
+        drawFromJSON(getCanvas());
     }
 
     function draw() {
