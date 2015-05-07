@@ -41,10 +41,14 @@
 
     /**
      * Returns the whole canvas so it can be saved and reused later
+     * TODO make it so we only send updated info, not everything always or change to pull from parent (main.html)
+     * instead of push from child (here)
      * @returns {*}
      */
-    function getCanvas() {
-        return json + " ]}]}";
+    function getJSON() {
+        var tmp = json + " ]}]}"
+        window.parent.saveJSON(tmp);
+        return tmp;
     }
 
     /**
@@ -80,24 +84,21 @@
     }
 
     function drawFromJSON(json) {
-        console.log(json);
+        //console.log(json);
         var derp = JSON.parse(json);
-        console.log("drawFromJSON", derp);
+        //console.log("drawFromJSON", derp);
         var allData = derp['draw'];
-        console.log("data", allData);
-        console.log("data['color']", allData['color']);
+        //console.log("data", allData);
+        //console.log("data['color']", allData['color']);
         var keys = new Array();
-        var derp = 1;
         for (var color in allData) {
             // we now have a color object
             var obj = allData[color];
-            console.log("derp:", derp);
-            derp++;
-            console.log("Data in first level ", allData[color]);
+            //console.log("Data in first level ", allData[color]);
             var colorObj = allData[color];
             for (var elements in colorObj) {
                 keys = [];
-                console.log("element in second level ", colorObj[elements]);
+                //console.log("element in second level ", colorObj[elements]);
                 var objOfElements = colorObj[elements];
                 for (var key in objOfElements) {
                     //console.log("element in third level ", objOfElements[key]);
@@ -107,8 +108,8 @@
                     // to get correct overlap between objects
                     keys.push(functionCallObj);
                 }
-                console.log("keys:", keys);
-                console.log("keys.length:", keys.length);
+                //console.log("keys:", keys);
+                //console.log("keys.length:", keys.length);
 
                 for (var i = 0; i < keys.length; i++) {
                 //for (var c = keys.length, i = 0; c >= i; c--) {
@@ -124,7 +125,7 @@
 
                     // color
                     if (len == 3) {
-                        console.log("fill(" + element['r'] + ", " + element['g'] + ", " + element['b'] + ");");
+                        //console.log("fill(" + element['r'] + ", " + element['g'] + ", " + element['b'] + ");");
                         fill(element['r'], element['g'], element['b']);
                     }
                     else if (len == 2) {
@@ -180,13 +181,13 @@
         button = createButton('Draw from json');
         button.position(200, 120);
         button.mouseClicked(function () {
-            drawFromJSON(getCanvas());
+            drawFromJSON(getJSON());
         });
     }
 
     // clear all
     function clearBg() {
-        console.log("before clear: ", getCanvas());
+        console.log("before clear: ", getJSON());
         initJSON();
         background(bgColor);
     }
@@ -211,8 +212,7 @@
 
     // to draw a more smooth version once we release the mouse
     function mouseReleased() {
-        console.log("mouseReleased");
-        drawFromJSON(getCanvas());
+        drawFromJSON(getJSON());
     }
 
     function draw() {

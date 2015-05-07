@@ -2,15 +2,15 @@ var app = angular.module("app", ['ui.bootstrap', 'ngRoute']);
 
 app.controller("AppCtrl", function ($http, $scope, $route) {
     var app = this;
-    $scope.submit = function (derp) {
-        console.log("Submit was called: ", derp);
-        $scope.desk = derp;
-        app.addDesk(derp);
+    $scope.desk = "default";
+    $scope.submit = function (desk) {
+        console.log("Submit was called: ", desk);
+        $scope.desk = desk;
+        app.addDesk(desk);
     };
     app.message = "Am I working?";
     $scope.loadData = function() {
         $http.get("/api/desk").success(function (data) {
-            console.log("LOAD DATA (if server has > 10 data then they are delivered in pages which is not handeled yet:  ", data);
             app.desks = data.objects;
 
         });
@@ -20,18 +20,21 @@ app.controller("AppCtrl", function ($http, $scope, $route) {
 
     app.addDesk = function (deskName) {
         if (deskName == null) {
-            deskName = "new";
+            deskName = "default";
         }
-        console.log("SHOULD WE INPUT THIS: ", $scope.desk)
-        console.log("adding new desk: ", deskName);
+        //console.log("SHOULD WE INPUT THIS: ", $scope.desk)
+        //console.log("adding new desk: ", deskName);
         var owner = app.getUserName();
-        console.log("owner: ", owner);
+        //console.log("owner: ", owner);
         var storage = "desks/" + owner + "/" + deskName;
         var url = "/createStorageFor/" + owner + "/" + deskName;
-        $.get(url, function (data) {
-            console.log("storage is created: ", data);
-        });
         var storage = app.createStorageFor(owner, deskName); //fix this later, right now its VERY unsafe
+        $scope.desk = deskName;
+    }
+
+    app.updateCurrentDesk = function (desk) {
+        $scope.desk = desk;
+        console.log("updateCurrentDesk: ", $scope.desk);
     }
 
     app.getUserName = function () {
@@ -64,7 +67,7 @@ app.controller("AppCtrl", function ($http, $scope, $route) {
         url = "/createStorageFor/" + owner + "/" + deskName;
         ret = null;
         //var val = $.Deffered();
-        console.log("this: ", this);
+        //console.log("this: ", this);
         val = $.when($.get(url).done(function (data) {
             var storage = data;
             $http.post("/api/desk", {"owner": owner, "name": deskName, "storage": storage})
@@ -72,12 +75,12 @@ app.controller("AppCtrl", function ($http, $scope, $route) {
                     console.log("successful push");
                     app.desks.push(data);
                     $scope.loadData();
-                    console.log("app.desks is now: ", app.desks);
+                   // console.log("app.desks is now: ", app.desks);
                 })
             return data;
         }));
         ret = val;
-        console.log("return is:", ret);
+        //console.log("return is:", ret);
         return ret;
         /*
 
