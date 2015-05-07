@@ -31,14 +31,7 @@ app.controller("AppCtrl", function ($http, $scope, $route) {
         $.get(url, function (data) {
             console.log("storage is created: ", data);
         });
-        //var storage = app.createStorageFor(owner, deskName); fix this later, right now its VERY unsafe
-        $http.post("/api/desk", {"owner": owner, "name": deskName, "storage": storage})
-            .success(function (data) {
-                console.log("successful push");
-                app.desks.push(data);
-                 $scope.loadData();
-                console.log("app.desks is now: ", app.desks);
-            })
+        var storage = app.createStorageFor(owner, deskName); //fix this later, right now its VERY unsafe
     }
 
     app.getUserName = function () {
@@ -70,30 +63,50 @@ app.controller("AppCtrl", function ($http, $scope, $route) {
     app.createStorageFor = function (owner, deskName) {
         url = "/createStorageFor/" + owner + "/" + deskName;
         ret = null;
+        //var val = $.Deffered();
         console.log("this: ", this);
-        ret = $.get(url, function (data) {
-            ret = data;
-            console.log("this: ", this);
-            //I need to write this outside the scope and im too tired to remember tha nice syntax for that
-            console.log("derpa:", data);
-        });
-        console.log("ret is: ", ret.responseText);
-        return ret.responseText
+        val = $.when($.get(url).done(function (data) {
+            var storage = data;
+            $http.post("/api/desk", {"owner": owner, "name": deskName, "storage": storage})
+                .success(function (data) {
+                    console.log("successful push");
+                    app.desks.push(data);
+                    $scope.loadData();
+                    console.log("app.desks is now: ", app.desks);
+                })
+            return data;
+        }));
+        ret = val;
+        console.log("return is:", ret);
+        return ret;
+        /*
+
+         , function (data) {
+         ret = data;
+         console.log("this: ", this);
+         //I need to write this outside the scope and im too tired to remember tha nice syntax for that
+         console.log("derpa:", data);
+         return data;
+         });
+         */
+        //console.log("----------- return iwill be:")
+        //console.log("ret is: ", ret.responseText);
+        //return ret.responseText
     }
 
 });
 
 app.controller('AlertDemoCtrl', function ($scope) {
-  $scope.alerts = [
-    { type: 'danger', msg: 'Oh snap! Change a few things up and try submitting again.' },
-    { type: 'success', msg: 'Well done! You successfully read this important alert message.' }
-  ];
+    $scope.alerts = [
+        { type: 'danger', msg: 'Oh snap! Change a few things up and try submitting again.' },
+        { type: 'success', msg: 'Well done! You successfully read this important alert message.' }
+    ];
 
-  $scope.addAlert = function() {
-    $scope.alerts.push({msg: 'Another alert!'});
-  };
+    $scope.addAlert = function() {
+        $scope.alerts.push({msg: 'Another alert!'});
+    };
 
-  $scope.closeAlert = function(index) {
-    $scope.alerts.splice(index, 1);
-  };
+    $scope.closeAlert = function(index) {
+        $scope.alerts.splice(index, 1);
+    };
 });

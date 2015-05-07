@@ -80,17 +80,21 @@ def storage(owner, deskname):
 
 @app.route('/createStorageFor/<owner>/<deskname>')
 def createStorageFor(owner, deskname):
-    print("derpa")
-    path = os.path.join("desks", owner)
+    print("owner: ", owner, " deskname", deskname)
+    ourDir = os.path.dirname(__file__)
+    path = os.path.join(ourDir, "desks")
+    path = os.path.join(path, owner)
+    print("path:", path)
     fileName = deskname
+    print("filename:", fileName)
 
     # Create folder if needed
-    try:
-        os.makedirs(path)
-    except OSError as exception:
-        if exception.errno != errno.EEXIST:
-            raise
-    # Create/overwrite file
+    # try:
+    #     os.makedirs(path)
+    # except OSError as exception:
+    #     if exception.errno != errno.EEXIST:
+    #         raise
+    # # Create/overwrite file
     try:
         #pass
         print("before open to: ", os.path.join(path, fileName))
