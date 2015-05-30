@@ -79,9 +79,12 @@ def storage(owner, deskname):
         return render_template("main.html", desk=ret.name, storage=ret.storage)
     return render_template("main.html", desk="Desk not found", storage="File is not stored on system")
 
-
+# first check if there already is a desk with that name, in that case return
 @app.route('/createStorageFor/<owner>/<deskname>')
 def createStorageFor(owner, deskname):
+    print("-"*30)
+    print("createStorageFor/", owner, "/", deskname)
+    print("")
     print("owner: ", owner, " deskname", deskname)
     ourDir = os.path.dirname(__file__)
     path = os.path.join(ourDir, "desks")
@@ -100,20 +103,24 @@ def createStorageFor(owner, deskname):
     try:
         #pass
         print("before open to: ", os.path.join(path, fileName))
-        f = open(os.path.join(path, fileName), 'w')
-        f.write("Testing")
+        f = open(os.path.join(path, fileName), 'a+')
+        #f.write("Testing")
         f.close()
         print("file has been closed")
     except Exception as e:
         print("file creation failed: ", e)
+        print("-"*30)
 
+    print("-"*30)
     return fileName
 
 
 @app.route('/savejson/<desk>', methods=['POST'])
 def savejson(desk):
+    print("-"*30)
+    print("savejson/", desk)
+    print("")
     jsonResponse = request.json
-    print("owner: ", desk)
     print("json: ", jsonResponse)
     print("jsonify(json): ", jsonify(jsonResponse))
     ourDir = os.path.dirname(__file__)
@@ -124,13 +131,47 @@ def savejson(desk):
         # pass
         print("before open to: ", os.path.join(path, fileName))
         f = open(os.path.join(path, fileName), 'w')
+        print("after open(...)")
         json.dump(jsonResponse, f)
+        print("after dump")
         f.close()
         print("file has been closed")
     except Exception as e:
         print("file creation failed: ", e)
+        print("-"*30)
+        return False
 
+    print("-"*30)
     return "derp"
+
+@app.route('/getjson/<desk>', methods=['GET'])
+def getjson(desk):
+    print("-"*30)
+    print("getjson/", desk)
+    print("")
+    ourDir = os.path.dirname(__file__)
+    path = os.path.join(ourDir, "desks")
+    path = os.path.join(path, owner)
+    fileName = desk
+    try:
+        # pass
+        print("before open to: ", os.path.join(path, fileName))
+        f = open(os.path.join(path, fileName), 'r')
+        print("after open")
+        print("f is: ", f)
+        contents = f.read()
+        print("contents: ", contents)
+        f.close()
+        print("after f.close()")
+        print("file has been closeddfsdf")
+    except Exception as e:
+        print("file creation failed: ", e)
+        print("-"*30)
+
+    print("-"*30)
+    return contents
+
+
 
 app.debug = True
 if __name__ == '__main__':

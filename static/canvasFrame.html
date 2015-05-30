@@ -21,7 +21,7 @@
     var r = 200;
     var g = 200;
     var b = 100;
-    var bgColor = "rgb(200,200,100)";
+    var bgColor = "rgb(255,255,255)";
     // The json obj is used to save the drawing
     var json = ""
 
@@ -41,15 +41,26 @@
 
     /**
      * Returns the whole canvas so it can be saved and reused later
-     * TODO make it so we only send updated info, not everything always or change to pull from parent (main.html)
-     * instead of push from child (here)
      * @returns {*}
      */
-    function getJSON() {
+    function getJSON(newJson) {
+
+        // get updated JSON and initJSON is the callback so the new JSON ends up there
+        //window.parent.getJSON(initJSON);
+        var tmp = json + " ]}]}"
+        return tmp;
+    }
+    /**
+     * Saves the JSON to the server. saveJSON was already in use by p5 so had to change name.
+     * TODO make it so we only send updated info, not everything always or change to pull from parent (main.html)
+     * instead of push from child (here)
+     */
+    function JSONsave() {
         var tmp = json + " ]}]}"
         window.parent.saveJSON(tmp);
         return tmp;
     }
+
 
     /**
      * Create JSON for a color (change)
@@ -75,18 +86,26 @@
     /**
      * Initialise our JSON object
      */
-    function initJSON() {
+    function initJSON(newJSON) {
+        if (typeof newJSON === 'undefined') {
         json = '{"draw": [\n{ \"color\":[' + getColorJson(r, g, b);
-        saveData(150, 150);
-        saveData(250, 150);
-        saveData(150, 250);
-        saveData(250, 250);
+        } else {
+            console.log("new JSON from file: ", newJSON);
+            json = newJSON.substring(0, newJSON.length -4)
+            console.log("trimmed it looks lite this: ", json);
+
+        }
+        //saveData(150, 150);
+        //saveData(250, 150);
+        //saveData(150, 250);
+        //saveData(250, 250);
     }
 
     function drawFromJSON(json) {
-        //console.log(json);
+        console.log("will draw from JSON")
+        console.log(json);
         var derp = JSON.parse(json);
-        //console.log("drawFromJSON", derp);
+        console.log("drawFromJSON", derp);
         var allData = derp['draw'];
         //console.log("data", allData);
         //console.log("data['color']", allData['color']);
@@ -138,6 +157,7 @@
                 }
             }
         }
+        console.log("end of drawFromJSON")
     }
 
     function setup() {
@@ -181,13 +201,13 @@
         button = createButton('Draw from json');
         button.position(200, 120);
         button.mouseClicked(function () {
-            drawFromJSON(getJSON());
+            //drawFromJSON(getJSON());
         });
     }
 
     // clear all
     function clearBg() {
-        console.log("before clear: ", getJSON());
+        //console.log("before clear: ", getJSON());
         initJSON();
         background(bgColor);
     }
@@ -212,6 +232,14 @@
 
     // to draw a more smooth version once we release the mouse
     function mouseReleased() {
+        drawFromJSON(getJSON());
+        JSONsave();
+    }
+
+    // updates the desk drawing from json
+    function updateDesk() {
+        console.log("updateDesk in the iframe")
+       // console.log("will draw this: ", getJSON() )
         drawFromJSON(getJSON());
     }
 

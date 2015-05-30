@@ -42,10 +42,10 @@
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <form class="navbar-form navbar-left" ng-submit="submit(desk)" ng-controller="AppCtrl">
                 <div class="form-group">
-                    <input type="text" class="form-control" placeholder="#Desks" ng-model="desk">
+                    <input type="text" id="deskName" class="form-control" placeholder="#Desks" ng-model="desk">
                 </div>
                 <button type="submit" id="submit" value="submit" class="btn btn-default"
-                        ng-click="app.updateCurrentDesk(desk)">
+                        ng-click="app.updateCurrentDesk(desk)" onClick="updateDesk()">
                     Submit
                 </button>
             </form>
@@ -59,13 +59,13 @@
 <div class="row" id="content">
 
     <!-- here we will have our canvas-->
-    <h1 class="text-center" id="currentDesk" ng-bind="desk">{{ desk }}</h1>b
+  {#  <h1 class="text-center" id="currentDesk" ng-bind="desk">{{ desk }}</h1>b
     {% raw %} <p class="text-center">test: {{ desk }}</p> {% endraw %}
 
     <p class="text-center">Open file: {{ storage }}</p>
 
     <p class="text-center">text we entered: {{ name | angular }}</p>
-
+#}
     <div id="embed-responsive">
         <iframe style="width: 100%; height: 100%" class="embed-responsive-item" id="canvasFrame"
                 src="{{ url_for('static', filename="canvasFrame.html") }}" onload='javascript:resizeIframe(this);'>
@@ -73,26 +73,61 @@
     </div>
 
     <script>
+        function updateDesk() {
+            // we only have 1 iframe so index is 0
+            //var currentDesk = $("#currentDesk").text();
+            var currentDesk = document.getElementById("deskName").value;
+            console.log("updateDesk : ", currentDesk)
 
+            // cant use jQuery, need to set contentTYpe
+            $.ajax({
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                url: '/getjson/' + currentDesk,
+                success: function (data) {
+                    console.log(" updateDesk sending this data: ", data, "to the iframe from updateDesk");
+                    window.frames[0].frameElement.contentWindow.clearBg();
+                    window.frames[0].frameElement.contentWindow.initJSON(data);
+                    window.frames[0].frameElement.contentWindow.updateDesk();
+                }
+            });
+
+        }
     </script>
+
 
     <div id="getJSON">
         <script>
             function saveJSON(jsonStr) {
                 var currentDesk = $("#currentDesk").text();
-
                 // cant use jQuery, need to set contentTYpe
+                console.log("saveJSON for desk:", currentDesk, "with following json:", jsonStr);
                 $.ajax({
                     type: "POST",
                     contentType: "application/json; charset=utf-8",
                     url: '/savejson/' + currentDesk,
                     data: jsonStr,
                     success: function (data) {
-                        console.log("json sent to server");
+                        console.log("json sent to server and return was: ", data);
                     },
                     dataType: "json"
                 });
             }
+
+            function getJSON(callback) {
+                var currentDesk = $("#currentDesk").text();
+                // cant use jQuery, need to set contentTYpe
+                $.ajax({
+                    type: "GET",
+                    contentType: "application/json; charset=utf-8",
+                    url: '/getjson/' + currentDesk,
+                    success: function (data) {
+                        //console.log("json fetched from the server:", data);
+                        callback(data);
+                    }
+                });
+            }
+
 
             //console.log(document.getElementById('canvasFrame').contentWindow.getJSON());
         </script>

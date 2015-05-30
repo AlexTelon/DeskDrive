@@ -8,7 +8,6 @@ app.controller("AppCtrl", function ($http, $scope, $route) {
         $scope.desk = desk;
         app.addDesk(desk);
     };
-    app.message = "Am I working?";
     $scope.loadData = function() {
         $http.get("/api/desk").success(function (data) {
             app.desks = data.objects;
@@ -62,7 +61,12 @@ app.controller("AppCtrl", function ($http, $scope, $route) {
 
     }
 
-
+    /**
+     * If new deskName it creates new, otherwise it will give back the old one.
+      * @param owner
+     * @param deskName
+     * @returns {null|*}
+     */
     app.createStorageFor = function (owner, deskName) {
         url = "/createStorageFor/" + owner + "/" + deskName;
         ret = null;
@@ -80,7 +84,7 @@ app.controller("AppCtrl", function ($http, $scope, $route) {
             return data;
         }));
         ret = val;
-        //console.log("return is:", ret);
+        console.log("createStorageFor return is:", ret);
         return ret;
         /*
 
