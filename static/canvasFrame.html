@@ -70,12 +70,17 @@
     function getColorJson(r, g, b) {
         return JSON.stringify({"r": r, "g": g, "b": b});
     }
+
     /**
      * If we have a change of color we add it to the json obj
+     * if parameter force is true then a current color is forced into the json.
      */
-    function updateColor() {
+    function updateColor(force) {
+        // give force default false behaviour
+        if (typeof force === "undefined")
+            force = false;
         // check for change in any of the colors
-        if (r != rSlider.value() || g != gSlider.value() || b != bSlider.value()) {
+        if (force || r != rSlider.value() || g != gSlider.value() || b != bSlider.value()) {
             r = rSlider.value();
             g = gSlider.value();
             b = bSlider.value();
@@ -85,6 +90,7 @@
             json += "{ \"color\":[" + getColorJson(r, g, b);
         }
     }
+
     /**
      * Initialise our JSON object
      */
@@ -101,6 +107,7 @@
 
     function drawFromJSON(json) {
         console.log("will draw from JSON")
+        console.log("color: ", getColorJson(rSlider.value(), gSlider.value(), bSlider.value()))
         //console.log(json);
         var derp = JSON.parse(json);
         //console.log("drawFromJSON", derp);
@@ -236,6 +243,10 @@
     function updateDesk() {
         console.log("updateDesk in the iframe")
        // console.log("will draw this: ", getJSON() )
+        console.log("before updateColor________________")
+        // Do a force updateColor here so we make sure colors follow through when chaning between desks
+        updateColor(true);
+        console.log("after updateColor________________")
         drawFromJSON(getJSON());
     }
 
