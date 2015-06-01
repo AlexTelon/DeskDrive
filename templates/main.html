@@ -89,7 +89,16 @@
                     window.frames[0].frameElement.contentWindow.clearBg();
                     window.frames[0].frameElement.contentWindow.initJSON(data);
                     window.frames[0].frameElement.contentWindow.updateDesk();
+                },
+                error: function (data) {
+                    console.log("ok, so the file probably did not exist");
+                    console.log("data we got back from fail:", data);
+                    window.frames[0].frameElement.contentWindow.clearBg();
+                    window.frames[0].frameElement.contentWindow.initJSON();
+                    window.frames[0].frameElement.contentWindow.updateDesk();
+
                 }
+
             });
 
         }

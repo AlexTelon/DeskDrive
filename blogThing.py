@@ -153,6 +153,7 @@ def getjson(desk):
     path = os.path.join(ourDir, "desks")
     path = os.path.join(path, owner)
     fileName = desk
+    contents = ""
     try:
         # pass
         print("before open to: ", os.path.join(path, fileName))
@@ -167,6 +168,7 @@ def getjson(desk):
     except Exception as e:
         print("file creation failed: ", e)
         print("-"*30)
+        abort(404)
 
     print("-"*30)
     return contents
