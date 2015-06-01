@@ -12,7 +12,7 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///pin.db'
 
 try:
-    ourDir = os.environ['OPENSHIFT_DATA_DIR']
+    ourDir = os.environ['OPENSHIFT_TMP_DIR']
 except KeyError as e:
     ourDir = os.path.dirname(__file__)
 
