@@ -21,7 +21,7 @@
     </script>
 
 </head>
-<body ng-app="app" ng-controller="AppCtrl as app">
+<body ng-app="app" ng-controller="AppCtrl as app" onload="updateDesk()">
 
 <nav class="navbar navbar-default">
     <div class="container-fluid">
@@ -99,23 +99,23 @@
     <div id="getJSON">
         <script>
             function saveJSON(jsonStr) {
-                var currentDesk = $("#currentDesk").text();
+                var currentDesk = document.getElementById("deskName").value
                 // cant use jQuery, need to set contentTYpe
-                console.log("saveJSON for desk:", currentDesk, "with following json:", jsonStr);
+                console.log("saveJSON for desk:", currentDesk)//, "with following json:", jsonStr);
                 $.ajax({
                     type: "POST",
                     contentType: "application/json; charset=utf-8",
                     url: '/savejson/' + currentDesk,
                     data: jsonStr,
                     success: function (data) {
-                        console.log("json sent to server and return was: ", data);
+                        //console.log("json sent to server and return was: ", data, "json saved in saveJSON main.html");
                     },
                     dataType: "json"
                 });
             }
 
             function getJSON(callback) {
-                var currentDesk = $("#currentDesk").text();
+                var currentDesk = document.getElementById("deskName").value
                 // cant use jQuery, need to set contentTYpe
                 $.ajax({
                     type: "GET",

@@ -47,7 +47,9 @@
 
         // get updated JSON and initJSON is the callback so the new JSON ends up there
         //window.parent.getJSON(initJSON);
-        var tmp = json + " ]}]}"
+        if (json != "") {
+            var tmp = json + " ]}]}"
+        }
         return tmp;
     }
     /**
@@ -87,12 +89,14 @@
      * Initialise our JSON object
      */
     function initJSON(newJSON) {
+        console.log("newJSON should be undefined at start");
+        console.log("newJSON is: ", newJSON);
         if (typeof newJSON === 'undefined') {
-        json = '{"draw": [\n{ \"color\":[' + getColorJson(r, g, b);
+            json = '{"draw": [\n{ \"color\":[' + getColorJson(r, g, b);
         } else {
-            console.log("new JSON from file: ", newJSON);
+            //console.log("new JSON from file: ", newJSON);
             json = newJSON.substring(0, newJSON.length -4)
-            console.log("trimmed it looks lite this: ", json);
+            //console.log("trimmed it looks lite this: ", json);
 
         }
         //saveData(150, 150);
@@ -105,7 +109,7 @@
         console.log("will draw from JSON")
         console.log(json);
         var derp = JSON.parse(json);
-        console.log("drawFromJSON", derp);
+        //console.log("drawFromJSON", derp);
         var allData = derp['draw'];
         //console.log("data", allData);
         //console.log("data['color']", allData['color']);
@@ -162,7 +166,7 @@
 
     function setup() {
         // init the JSON object that stores all draw information for storage
-        initJSON();
+        initJSON()
 
         var w = window.innerWidth;
         var h = 700;
@@ -208,7 +212,7 @@
     // clear all
     function clearBg() {
         //console.log("before clear: ", getJSON());
-        initJSON();
+        //initJSON();
         background(bgColor);
     }
 
