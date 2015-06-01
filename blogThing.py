@@ -1,12 +1,10 @@
 import os
-import errno
-from flask import Flask, render_template, session, request, jsonify
+from flask import Flask, render_template, request, jsonify
 from flask.ext.restful import abort
 from flask.ext.restless import APIManager
 from flask.ext.sqlalchemy import SQLAlchemy
 from sqlalchemy import Text, Column, Integer
 from flask.ext.triangle import Triangle
-import requests
 import json
 
 
@@ -94,13 +92,6 @@ def createStorageFor(owner, deskname):
     fileName = deskname
     print("filename:", fileName)
 
-    # Create folder if needed
-    # try:
-    # os.makedirs(path)
-    # except OSError as exception:
-    #     if exception.errno != errno.EEXIST:
-    #         raise
-    # # Create/overwrite file
     try:
         #pass
         print("before open to: ", os.path.join(path, fileName))

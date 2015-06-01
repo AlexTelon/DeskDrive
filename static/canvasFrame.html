@@ -94,20 +94,14 @@
         if (typeof newJSON === 'undefined') {
             json = '{"draw": [\n{ \"color\":[' + getColorJson(r, g, b);
         } else {
-            //console.log("new JSON from file: ", newJSON);
             json = newJSON.substring(0, newJSON.length -4)
-            //console.log("trimmed it looks lite this: ", json);
 
         }
-        //saveData(150, 150);
-        //saveData(250, 150);
-        //saveData(150, 250);
-        //saveData(250, 250);
     }
 
     function drawFromJSON(json) {
         console.log("will draw from JSON")
-        console.log(json);
+        //console.log(json);
         var derp = JSON.parse(json);
         //console.log("drawFromJSON", derp);
         var allData = derp['draw'];
@@ -211,8 +205,6 @@
 
     // clear all
     function clearBg() {
-        //console.log("before clear: ", getJSON());
-        //initJSON();
         background(bgColor);
     }
 
