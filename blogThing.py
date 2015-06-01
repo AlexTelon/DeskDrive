@@ -1,6 +1,7 @@
 import os
 import errno
 from flask import Flask, render_template, session, request, jsonify
+from flask.ext.restful import abort
 from flask.ext.restless import APIManager
 from flask.ext.sqlalchemy import SQLAlchemy
 from sqlalchemy import Text, Column, Integer
@@ -164,7 +165,6 @@ def getjson(desk):
         print("contents: ", contents)
         f.close()
         print("after f.close()")
-        print("file has been closeddfsdf")
     except Exception as e:
         print("file creation failed: ", e)
         print("-"*30)
