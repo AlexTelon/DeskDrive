@@ -10,6 +10,12 @@ import json
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///pin.db'
+
+try:
+    ourDir = os.environ['OPENSHIFT_DATA_DIR']
+except KeyError as e:
+    ourDir = os.path.dirname(__file__)
+
 db = SQLAlchemy(app)
 Triangle(app)
 owner = "AlexTelon"
@@ -85,7 +91,8 @@ def createStorageFor(owner, deskname):
     print("createStorageFor/", owner, "/", deskname)
     print("")
     print("owner: ", owner, " deskname", deskname)
-    ourDir = os.path.dirname(__file__)
+    #ourDir = os.environ['OPENSHIFT_DATA_DIR']
+    #ourDir = os.path.dirname(__file__)
     path = os.path.join(ourDir, "desks")
     path = os.path.join(path, owner)
     print("path:", path)
@@ -96,7 +103,6 @@ def createStorageFor(owner, deskname):
         #pass
         print("before open to: ", os.path.join(path, fileName))
         f = open(os.path.join(path, fileName), 'a+')
-        #f.write("Testing")
         f.close()
         print("file has been closed")
     except Exception as e:
@@ -115,7 +121,8 @@ def savejson(desk):
     jsonResponse = request.json
     print("json: ", jsonResponse)
     print("jsonify(json): ", jsonify(jsonResponse))
-    ourDir = os.path.dirname(__file__)
+    #ourDir = os.path.dirname(__file__)
+    #ourDir = os.environ['OPENSHIFT_DATA_DIR']
     path = os.path.join(ourDir, "desks")
     path = os.path.join(path, owner)
     fileName = desk
@@ -141,7 +148,8 @@ def getjson(desk):
     print("-"*30)
     print("getjson/", desk)
     print("")
-    ourDir = os.path.dirname(__file__)
+    #ourDir = os.environ['OPENSHIFT_DATA_DIR']
+    #ourDir = os.path.dirname(__file__)
     path = os.path.join(ourDir, "desks")
     path = os.path.join(path, owner)
     fileName = desk
